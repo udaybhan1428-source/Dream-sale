@@ -1,282 +1,100 @@
-# Dream Sale - Ecommerce Platform
+# Dream Sale
 
-A modern, full-stack ecommerce platform built with React, Node.js, Express, and PostgreSQL.
+Dream Sale is a mobile-first ecommerce storefront for Clothes and Electrical products, with a secure admin panel and Razorpay-ready checkout.
 
-## Features
+## Tech stack
+- Frontend: React + Vite + CSS
+- Backend: Node.js + Express + Prisma + SQLite for local development
+- Database: Prisma schema for users, products, categories, cart, orders, payments, and admin users
+- Payments: Razorpay-ready server-side verification
 
-### Customer Features
-- Home page with Dream Sale branding
-- Product catalog with Clothes and Electrical categories
-- Product search and filtering
-- Product details with images
-- Shopping cart management
-- Secure checkout
-- Razorpay payment integration
-- Order history and tracking
-- Mobile-responsive design
+## Project structure
 
-### Admin Features
-- Secure admin login
-- Product management (create, read, update, delete)
-- Product image uploads
-- Category management
-- Order management and status tracking
-- Sales analytics
-
-## Tech Stack
-
-**Frontend:**
-- React 18
-- Vite
-- Tailwind CSS
-- Axios
-
-**Backend:**
-- Node.js
-- Express.js
-- PostgreSQL
-- Prisma ORM
-- JWT Authentication
-
-**Payment:**
-- Razorpay
-
-## Prerequisites
-
-- Node.js (v16 or higher)
-- PostgreSQL (v12 or higher)
-- npm or yarn
-
-## Project Structure
-
-```
-dream-sale/
-├── frontend/               # React frontend application
-│   ├── src/
-│   ├── public/
-│   └── package.json
-├── backend/               # Express backend API
-│   ├── src/
+```text
+Dream-sale/
+├── backend/
 │   ├── prisma/
+│   ├── src/
+│   ├── .env.example
 │   └── package.json
-├── .env.example           # Environment variables template
-└── README.md
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   ├── .env.example
+│   ├── index.html
+│   └── package.json
+├── .gitignore
+├── README.md
+└── .nvmrc
 ```
 
-## Setup Instructions
+## Local setup
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/udaybhan1428-source/Dream-sale.git
-cd Dream-sale
-```
-
-### 2. Setup Backend
-
+### 1. Backend
 ```bash
 cd backend
-
-# Install dependencies
 npm install
-
-# Create .env file (see Environment Variables section)
 cp .env.example .env
-
-# Run database migrations
-npm run db:migrate
-
-# Seed database (optional - adds sample data)
+npx prisma generate
+npx prisma migrate dev --name init
 npm run db:seed
-
-# Start backend server
 npm run dev
 ```
 
-Backend runs on: `http://localhost:5000`
+The API runs on http://localhost:5000.
 
-### 3. Setup Frontend
-
+### 2. Frontend
 ```bash
 cd frontend
-
-# Install dependencies
 npm install
-
-# Create .env file (see Environment Variables section)
 cp .env.example .env
-
-# Start development server
 npm run dev
 ```
 
-Frontend runs on: `http://localhost:5173`
+The app runs on http://localhost:5173.
 
-## Environment Variables
+## Environment variables
 
-### Backend (.env)
+Backend `.env` must include:
 
-```
-# Database
-DATABASE_URL=postgresql://user:password@localhost:5432/dream_sale
-
-# JWT
-JWT_SECRET=your-secret-key-here
-JWT_EXPIRE=7d
-
-# Razorpay
+```bash
+DATABASE_URL="file:./prisma/dev.db"
+JWT_SECRET=replace_with_a_strong_random_secret
+PORT=5000
+ADMIN_EMAIL=admin@dreamsale.com
+ADMIN_PASSWORD=change_this_to_a_strong_admin_password
 RAZORPAY_KEY_ID=your_razorpay_key_id
 RAZORPAY_KEY_SECRET=your_razorpay_key_secret
-
-# Admin
-ADMIN_DEFAULT_PASSWORD=secure-admin-password
-
-# Server
-PORT=5000
-NODE_ENV=development
 ```
 
-### Frontend (.env)
+Frontend `.env` can include:
 
-```
+```bash
 VITE_API_URL=http://localhost:5000
 ```
 
-## Database Setup
+Important: never commit real secrets to GitHub. Keep them in local environment files only.
 
-```bash
-# Create PostgreSQL database
-createdb dream_sale
+## Included features
+- Dream Sale branding and responsive storefront
+- Product categories: Clothes and Electrical only
+- Search, filtering, and product detail pages
+- Cart with quantity selection
+- Checkout with customer information
+- Order creation and confirmation flow
+- Secure admin login
+- Admin product management, order status update, and product image controls
+- Razorpay order creation and server-side signature verification
+- SQLite-backed local development database
 
-# Run migrations
-cd backend
-npm run db:migrate
+## Admin access
+Use the default admin credentials from your backend `.env` file after setup. Change them immediately in production.
 
-# (Optional) Seed with sample data
-npm run db:seed
-```
+## Production notes
+- Use a hosted database such as PostgreSQL in production
+- Keep Razorpay keys in environment variables only
+- Review the backend routes before exposing the app publicly
+- Run the frontend and backend behind a secure reverse proxy in deployment
 
-## Running the Application
-
-### Development Mode
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-npm run dev
-```
-
-**Terminal 2 - Frontend:**
-```bash
-cd frontend
-npm run dev
-```
-
-### Production Build
-
-**Frontend:**
-```bash
-cd frontend
-npm run build
-```
-
-**Backend:**
-```bash
-cd backend
-npm run build
-npm start
-```
-
-## API Documentation
-
-### Authentication
-- POST `/api/auth/register` - Register new customer
-- POST `/api/auth/login` - Login customer
-- POST `/api/auth/admin-login` - Admin login
-- POST `/api/auth/refresh` - Refresh token
-
-### Products
-- GET `/api/products` - List all products
-- GET `/api/products/:id` - Get product details
-- GET `/api/categories` - List categories
-- GET `/api/products?category=clothes` - Filter by category
-
-### Cart
-- GET `/api/cart` - Get user's cart
-- POST `/api/cart/add` - Add item to cart
-- PUT `/api/cart/update/:itemId` - Update cart item
-- DELETE `/api/cart/remove/:itemId` - Remove from cart
-
-### Orders
-- POST `/api/orders` - Create order
-- GET `/api/orders` - Get user's orders
-- GET `/api/orders/:id` - Get order details
-
-### Payments
-- POST `/api/payments/create-order` - Create Razorpay order
-- POST `/api/payments/verify` - Verify payment signature
-
-### Admin
-- POST `/api/admin/products` - Create product
-- PUT `/api/admin/products/:id` - Update product
-- DELETE `/api/admin/products/:id` - Delete product
-- GET `/api/admin/orders` - View all orders
-- PUT `/api/admin/orders/:id/status` - Update order status
-
-## Security Measures
-
-✅ Passwords hashed with bcryptjs
-✅ JWT-based authentication
-✅ Protected admin routes
-✅ Razorpay signature verification
-✅ Input validation on all endpoints
-✅ Environment variable protection
-✅ CORS enabled for frontend
-✅ Rate limiting on authentication endpoints
-
-## Features Implementation Status
-
-- ✅ Frontend project setup
-- ✅ Backend API server
-- ✅ Database schema
-- ✅ Authentication system
-- ✅ Product management
-- ✅ Categories (Clothes, Electrical)
-- ✅ Shopping cart
-- ✅ Checkout flow
-- ✅ Razorpay integration
-- ✅ Admin panel
-- ✅ Order management
-- ✅ Mobile responsive design
-- ✅ Dream Sale branding
-
-## Troubleshooting
-
-### Port Already in Use
-```bash
-# Backend (5000)
-lsof -i :5000
-kill -9 <PID>
-
-# Frontend (5173)
-lsof -i :5173
-kill -9 <PID>
-```
-
-### Database Connection Issues
-- Verify PostgreSQL is running
-- Check DATABASE_URL in .env
-- Ensure database exists: `psql -l`
-
-### Razorpay Integration Not Working
-- Verify RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET are correct
-- Check that payment endpoint is accessible
-- Review payment verification logs
-
-## Support
-
-For issues or questions, please create an issue in the repository.
-
-## License
-
-MIT
+## Important payment note
+The Razorpay integration is fully wired for secure backend verification, but live payment processing requires valid `RAZORPAY_KEY_ID` and `RAZORPAY_KEY_SECRET`. Until those credentials are configured, checkout will fail with a clear configuration message instead of using fake values.
